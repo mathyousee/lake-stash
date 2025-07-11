@@ -1,45 +1,52 @@
 import React, { useState, useEffect } from 'react';
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/react.svg'
 import './App.css'
-
+import InventoryApp from './components/InventoryApp';
+import LoginPrompt from './components/LoginPrompt';
 
 function App() {
-  const [count, setCount] = useState(0)
-  const [data, setData] = useState('');
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-    (async function () {
-      const { text } = await( await fetch(`../api/mymessage`)).json();
-      setData(text);
-    })();
-  });
+  useEffect(() => {
+    checkAuthStatus();
+  }, []);
+
+  const checkAuthStatus = async () => {
+    try {
+      const response = await fetch('/api/auth/user');
+      const data = await response.json();
+      
+      if (data.authenticated && data.user) {
+        setUser(data.user);
+      } else {
+        setUser(null);
+      }
+    } catch (error) {
+      console.error('Error checking auth status:', error);
+      setUser(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="app-loading">
+        <div className="loading-spinner"></div>
+        <p>Loading...</p>
+      </div>
+    );
+  }
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <div>my data is "{data}"</div>;
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div className="app">
+      {user ? (
+        <InventoryApp user={user} onLogout={() => setUser(null)} />
+      ) : (
+        <LoginPrompt onLogin={checkAuthStatus} />
+      )}
+    </div>
+  );
 }
 
 export default App
