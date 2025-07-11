@@ -1,0 +1,2 @@
+# lake-stash
+Cabin Inventory
