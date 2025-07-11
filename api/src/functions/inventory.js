@@ -7,8 +7,57 @@ const cosmosClient = new CosmosClient({
     key: process.env.COSMOS_DB_KEY || 'C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw=='
 });
 
-const database = cosmosClient.database('LakeStashDB');
-const container = database.container('Inventory');
+// Database and container configuration
+const databaseId = 'LakeStashDB';
+const containerId = 'Inventory';
+
+// Initialize database and container with auto-creation
+async function initializeCosmosDB() {
+    try {
+        // Create database if it doesn't exist
+        const { database } = await cosmosClient.databases.createIfNotExists({ 
+            id: databaseId,
+            throughput: 400 // Minimum throughput for shared databases
+        });
+        
+        // Create container if it doesn't exist
+        const { container } = await database.containers.createIfNotExists({
+            id: containerId,
+            partitionKey: {
+                paths: ['/userId'], // Partition by userId for user isolation
+                kind: 'Hash'
+            },
+            indexingPolicy: {
+                automatic: true,
+                includedPaths: [
+                    { path: '/*' } // Index all properties
+                ],
+                excludedPaths: [
+                    { path: '/notes/*' } // Exclude notes from indexing for better performance
+                ]
+            }
+        });
+        
+        console.log(`✅ Cosmos DB initialized: ${databaseId}/${containerId}`);
+        return container;
+    } catch (error) {
+        console.error('❌ Error initializing Cosmos DB:', error);
+        throw error;
+    }
+}
+
+// Initialize on startup (for development - in production this might be done differently)
+let containerInstance;
+const getContainer = async () => {
+    if (!containerInstance) {
+        containerInstance = await initializeCosmosDB();
+    }
+    return containerInstance;
+};
+
+// For immediate access in handlers (will auto-create if needed)
+const database = cosmosClient.database(databaseId);
+const container = database.container(containerId);
 
 // Helper function to get user from Azure Static Web Apps authentication
 function getUserFromRequest(request) {
