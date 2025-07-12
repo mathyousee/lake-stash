@@ -98,6 +98,19 @@ const InventoryItem = ({ item, onUpdate, onDelete, categories, statuses }) => {
                 />
               </div>
               <div className="edit-group">
+                <label>Max Quantity</label>
+                <input
+                  type="number"
+                  value={editData.maxQuantity || 50}
+                  onChange={(e) => setEditData({ ...editData, maxQuantity: parseFloat(e.target.value) || 50 })}
+                  min="1"
+                  step="1"
+                />
+              </div>
+            </div>
+
+            <div className="edit-row">
+              <div className="edit-group">
                 <label>Unit</label>
                 <select
                   value={editData.unit}
@@ -108,9 +121,6 @@ const InventoryItem = ({ item, onUpdate, onDelete, categories, statuses }) => {
                   ))}
                 </select>
               </div>
-            </div>
-
-            <div className="edit-row">
               <div className="edit-group">
                 <label>Category</label>
                 <select
@@ -122,6 +132,9 @@ const InventoryItem = ({ item, onUpdate, onDelete, categories, statuses }) => {
                   ))}
                 </select>
               </div>
+            </div>
+
+            <div className="edit-row">
               <div className="edit-group">
                 <label>Status</label>
                 <select
@@ -155,21 +168,26 @@ const InventoryItem = ({ item, onUpdate, onDelete, categories, statuses }) => {
   return (
     <div className="inventory-item">
       <div className="item-header">
-        <div className="item-title">
+        <div className="item-title-section">
           <span className="category-emoji">{getCategoryEmoji(item.category)}</span>
-          <h3>{item.name}</h3>
+          <h2 className="item-name">{item.name}</h2>
           <span className="category-badge">{item.category}</span>
         </div>
-        <div className="item-actions">
-          <button onClick={() => setIsEditing(true)} className="edit-btn">
-            ✏️
-          </button>
-          <button 
-            onClick={handleDelete} 
-            className={`delete-btn ${showDeleteConfirm ? 'confirm' : ''}`}
+        <div className="status-dropdown-container">
+          <select
+            value={item.status}
+            onChange={(e) => handleQuickStatusUpdate(e.target.value)}
+            className="status-dropdown"
+            style={{
+              backgroundColor: getStatusColor(item.status),
+              color: 'white',
+              borderColor: getStatusColor(item.status)
+            }}
           >
-            {showDeleteConfirm ? '✓ Confirm' : '🗑️'}
-          </button>
+            {statuses.map(status => (
+              <option key={status} value={status}>{status}</option>
+            ))}
+          </select>
         </div>
       </div>
 
@@ -180,52 +198,28 @@ const InventoryItem = ({ item, onUpdate, onDelete, categories, statuses }) => {
             <span className="quantity-unit">{item.unit}</span>
           </div>
           
-          <div className="quantity-controls">
-            <button 
-              onClick={() => handleQuickQuantityUpdate(Math.max(0, item.quantity - 1))}
-              className="quantity-btn minus"
-            >
-              −
-            </button>
+          <div className="quantity-slider-container">
+            <div className="slider-labels">
+              <span>0</span>
+              <span>{item.maxQuantity || 50}</span>
+            </div>
             <input
-              type="number"
-              value={item.quantity}
-              onChange={(e) => handleQuickQuantityUpdate(parseFloat(e.target.value) || 0)}
-              className="quantity-input"
+              type="range"
               min="0"
-              step="0.1"
+              max={item.maxQuantity || 50}
+              value={item.quantity}
+              onChange={(e) => handleQuickQuantityUpdate(parseFloat(e.target.value))}
+              className="quantity-slider"
+              step="1"
             />
-            <button 
-              onClick={() => handleQuickQuantityUpdate(item.quantity + 1)}
-              className="quantity-btn plus"
-            >
-              +
-            </button>
-          </div>
-        </div>
-
-        <div className="status-section">
-          <div className="status-buttons">
-            {statuses.map(status => (
-              <button
-                key={status}
-                onClick={() => handleQuickStatusUpdate(status)}
-                className={`status-btn ${item.status === status ? 'active' : ''}`}
-                style={{
-                  backgroundColor: item.status === status ? getStatusColor(status) : 'transparent',
-                  color: item.status === status ? 'white' : getStatusColor(status),
-                  borderColor: getStatusColor(status)
-                }}
-              >
-                {status}
-              </button>
-            ))}
           </div>
         </div>
 
         {item.notes && (
           <div className="notes-section">
-            <p className="item-notes">{item.notes}</p>
+            <div className="notes-icon">📝</div>
+            <span className="notes-label">Notes</span>
+            <span className="notes-text">Add notes</span>
           </div>
         )}
 
@@ -233,6 +227,17 @@ const InventoryItem = ({ item, onUpdate, onDelete, categories, statuses }) => {
           <span className="last-updated">
             Updated {formatLastUpdated(item.updatedAt)}
           </span>
+          <div className="item-actions">
+            <button onClick={() => setIsEditing(true)} className="edit-btn">
+              ✏️
+            </button>
+            <button 
+              onClick={handleDelete} 
+              className={`delete-btn ${showDeleteConfirm ? 'confirm' : ''}`}
+            >
+              {showDeleteConfirm ? '✓' : '🗑️'}
+            </button>
+          </div>
         </div>
       </div>
     </div>
