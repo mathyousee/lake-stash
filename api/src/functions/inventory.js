@@ -43,10 +43,10 @@ async function initializeCosmosDB() {
     }
     
     try {
-        // Create database if it doesn't exist
+        // Create database if it doesn't exist (without throughput for serverless)
         const { database } = await cosmosClient.databases.createIfNotExists({ 
-            id: databaseId,
-            throughput: 400 // Minimum throughput for shared databases
+            id: databaseId
+            // No throughput setting for serverless accounts
         });
         
         // Create container if it doesn't exist
