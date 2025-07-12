@@ -162,13 +162,13 @@ const InventoryItem = ({ item, onUpdate, onDelete, categories, statuses }) => {
         </div>
         <div className="item-actions">
           <button onClick={() => setIsEditing(true)} className="edit-btn">
-            ✏️
+            ✏️ Edit
           </button>
           <button 
             onClick={handleDelete} 
             className={`delete-btn ${showDeleteConfirm ? 'confirm' : ''}`}
           >
-            {showDeleteConfirm ? '✓ Confirm' : '🗑️'}
+            {showDeleteConfirm ? '✓ Confirm' : '🗑️ Delete'}
           </button>
         </div>
       </div>
