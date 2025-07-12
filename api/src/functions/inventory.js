@@ -86,10 +86,7 @@ const getContainer = async () => {
 
 // For immediate access in handlers (will auto-create if needed)
 let database, container;
-if (cosmosInitialized) {
-    database = cosmosClient.database(databaseId);
-    container = database.container(containerId);
-}
+// Don't initialize container references until we've ensured they exist
 
 // Helper function to get user from Azure Static Web Apps authentication
 function getUserFromRequest(request) {
@@ -177,7 +174,7 @@ app.http('createInventoryItem', {
             }
 
             // Check if Cosmos DB is initialized
-            if (!cosmosInitialized || !container) {
+            if (!cosmosInitialized) {
                 console.error('❌ Cosmos DB not initialized');
                 return {
                     status: 500,
@@ -188,6 +185,24 @@ app.http('createInventoryItem', {
                             hasEndpoint: !!process.env.COSMOS_DB_ENDPOINT,
                             hasKey: !!process.env.COSMOS_DB_KEY
                         }
+                    })
+                };
+            }
+
+            // Initialize database and container if not already done
+            try {
+                if (!container) {
+                    console.log('🔧 Initializing Cosmos DB database and container...');
+                    container = await initializeCosmosDB();
+                }
+            } catch (error) {
+                console.error('❌ Failed to initialize Cosmos DB:', error);
+                return {
+                    status: 500,
+                    body: JSON.stringify({ 
+                        error: 'Failed to initialize database',
+                        message: error.message,
+                        isDevelopment
                     })
                 };
             }
@@ -257,7 +272,7 @@ app.http('getInventoryItems', {
             }
 
             // Check if Cosmos DB is initialized
-            if (!cosmosInitialized || !container) {
+            if (!cosmosInitialized) {
                 console.error('❌ Cosmos DB not initialized');
                 return {
                     status: 500,
@@ -268,6 +283,24 @@ app.http('getInventoryItems', {
                             hasEndpoint: !!process.env.COSMOS_DB_ENDPOINT,
                             hasKey: !!process.env.COSMOS_DB_KEY
                         }
+                    })
+                };
+            }
+
+            // Initialize database and container if not already done
+            try {
+                if (!container) {
+                    console.log('🔧 Initializing Cosmos DB database and container...');
+                    container = await initializeCosmosDB();
+                }
+            } catch (error) {
+                console.error('❌ Failed to initialize Cosmos DB:', error);
+                return {
+                    status: 500,
+                    body: JSON.stringify({ 
+                        error: 'Failed to initialize database',
+                        message: error.message,
+                        isDevelopment
                     })
                 };
             }
@@ -314,6 +347,22 @@ app.http('updateInventoryItem', {
                     status: 401, 
                     body: JSON.stringify({ error: 'Unauthorized' }) 
                 };
+            }
+
+            // Initialize database and container if not already done
+            if (cosmosInitialized && !container) {
+                try {
+                    container = await initializeCosmosDB();
+                } catch (error) {
+                    console.error('❌ Failed to initialize Cosmos DB:', error);
+                    return {
+                        status: 500,
+                        body: JSON.stringify({ 
+                            error: 'Failed to initialize database',
+                            message: error.message
+                        })
+                    };
+                }
             }
 
             const itemId = request.params.id;
@@ -376,6 +425,22 @@ app.http('deleteInventoryItem', {
                     status: 401, 
                     body: JSON.stringify({ error: 'Unauthorized' }) 
                 };
+            }
+
+            // Initialize database and container if not already done
+            if (cosmosInitialized && !container) {
+                try {
+                    container = await initializeCosmosDB();
+                } catch (error) {
+                    console.error('❌ Failed to initialize Cosmos DB:', error);
+                    return {
+                        status: 500,
+                        body: JSON.stringify({ 
+                            error: 'Failed to initialize database',
+                            message: error.message
+                        })
+                    };
+                }
             }
 
             const itemId = request.params.id;
