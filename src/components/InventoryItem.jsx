@@ -98,6 +98,19 @@ const InventoryItem = ({ item, onUpdate, onDelete, categories, statuses }) => {
                 />
               </div>
               <div className="edit-group">
+                <label>Max Quantity</label>
+                <input
+                  type="number"
+                  value={editData.maxQuantity || 50}
+                  onChange={(e) => setEditData({ ...editData, maxQuantity: parseFloat(e.target.value) || 50 })}
+                  min="1"
+                  step="1"
+                />
+              </div>
+            </div>
+
+            <div className="edit-row">
+              <div className="edit-group">
                 <label>Unit</label>
                 <select
                   value={editData.unit}
@@ -108,9 +121,6 @@ const InventoryItem = ({ item, onUpdate, onDelete, categories, statuses }) => {
                   ))}
                 </select>
               </div>
-            </div>
-
-            <div className="edit-row">
               <div className="edit-group">
                 <label>Category</label>
                 <select
@@ -122,6 +132,9 @@ const InventoryItem = ({ item, onUpdate, onDelete, categories, statuses }) => {
                   ))}
                 </select>
               </div>
+            </div>
+
+            <div className="edit-row">
               <div className="edit-group">
                 <label>Status</label>
                 <select
@@ -188,12 +201,12 @@ const InventoryItem = ({ item, onUpdate, onDelete, categories, statuses }) => {
           <div className="quantity-slider-container">
             <div className="slider-labels">
               <span>0</span>
-              <span>{Math.max(36, item.quantity * 2)}</span>
+              <span>{item.maxQuantity || 50}</span>
             </div>
             <input
               type="range"
               min="0"
-              max={Math.max(36, item.quantity * 2)}
+              max={item.maxQuantity || 50}
               value={item.quantity}
               onChange={(e) => handleQuickQuantityUpdate(parseFloat(e.target.value))}
               className="quantity-slider"

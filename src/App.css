@@ -608,22 +608,31 @@ body {
 
 .status-dropdown {
   padding: 0.5rem 0.75rem;
-  border: 2px solid;
-  border-radius: 8px;
+  border: none;
+  border-radius: 20px;
   cursor: pointer;
   font-size: 0.875rem;
   font-weight: 600;
   transition: all 0.2s;
   appearance: none;
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
   background-position: right 0.5rem center;
   background-repeat: no-repeat;
   background-size: 1rem;
   padding-right: 2.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  min-width: 80px;
 }
 
 .status-dropdown:hover {
   opacity: 0.9;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.status-dropdown:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
 }
 
 .item-actions {
@@ -1038,6 +1047,7 @@ body {
     padding-right: 1.75rem;
     font-size: 0.7rem;
     min-width: auto;
+    border-radius: 14px;
   }
   
   .status-buttons {

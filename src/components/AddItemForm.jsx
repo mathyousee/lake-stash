@@ -4,6 +4,7 @@ const AddItemForm = ({ onSubmit, onCancel, categories, statuses }) => {
   const [formData, setFormData] = useState({
     name: '',
     quantity: '',
+    maxQuantity: 50,
     unit: 'items',
     category: 'Pantry',
     status: 'Enough',
@@ -15,11 +16,13 @@ const AddItemForm = ({ onSubmit, onCancel, categories, statuses }) => {
     if (formData.name.trim() && formData.quantity !== '') {
       onSubmit({
         ...formData,
-        quantity: parseFloat(formData.quantity) || 0
+        quantity: parseFloat(formData.quantity) || 0,
+        maxQuantity: parseFloat(formData.maxQuantity) || 50
       });
       setFormData({
         name: '',
         quantity: '',
+        maxQuantity: 50,
         unit: 'items',
         category: 'Pantry',
         status: 'Enough',
@@ -75,6 +78,21 @@ const AddItemForm = ({ onSubmit, onCancel, categories, statuses }) => {
               />
             </div>
             <div className="form-group">
+              <label htmlFor="maxQuantity">Max Quantity</label>
+              <input
+                id="maxQuantity"
+                type="number"
+                value={formData.maxQuantity}
+                onChange={(e) => handleChange('maxQuantity', e.target.value)}
+                placeholder="50"
+                min="1"
+                step="1"
+              />
+            </div>
+          </div>
+
+          <div className="form-row">
+            <div className="form-group">
               <label htmlFor="unit">Unit</label>
               <select
                 id="unit"
@@ -86,9 +104,6 @@ const AddItemForm = ({ onSubmit, onCancel, categories, statuses }) => {
                 ))}
               </select>
             </div>
-          </div>
-
-          <div className="form-row">
             <div className="form-group">
               <label htmlFor="category">Category</label>
               <select
