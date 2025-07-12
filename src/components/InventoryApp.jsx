@@ -21,21 +21,40 @@ const InventoryApp = ({ user, onLogout }) => {
   const fetchItems = async () => {
     try {
       setLoading(true);
+      console.log('🔄 Fetching inventory items...');
+      
       const response = await fetch('/api/inventory');
+      console.log('📡 Response status:', response.status);
       
       if (response.status === 401) {
+        console.log('🔒 Unauthorized - logging out');
         onLogout();
         return;
       }
       
       if (response.ok) {
         const data = await response.json();
+        console.log('✅ Received items:', data.length);
         setItems(data);
       } else {
-        console.error('Failed to fetch items');
+        const errorText = await response.text();
+        console.error('❌ Failed to fetch items:', response.status, errorText);
+        
+        // Try to parse as JSON for better error info
+        try {
+          const errorData = JSON.parse(errorText);
+          console.error('Error details:', errorData);
+          
+          if (errorData.error?.includes('Database not configured')) {
+            alert('Database configuration error. This may be due to missing environment variables in the deployed app. Check the browser console for details.');
+          }
+        } catch (e) {
+          console.error('Raw error response:', errorText);
+        }
       }
     } catch (error) {
-      console.error('Error fetching items:', error);
+      console.error('❌ Network error fetching items:', error);
+      alert('Network error. Please check your connection and try again.');
     } finally {
       setLoading(false);
     }
