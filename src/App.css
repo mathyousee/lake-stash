@@ -679,6 +679,23 @@ body {
   padding-top: 0.75rem;
 }
 
+.meta-qty-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0 0 0.5rem 0;
+}
+
+.meta-qty-row .item-meta {
+  padding: 0; /* override default padding so row aligns nicely */
+  margin-top: 0;
+}
+
+.meta-qty-row .quantity-display {
+  margin: 0; /* remove bottom margin when inline */
+}
+
 .quantity-section {
   margin-bottom: 1.5rem;
 }

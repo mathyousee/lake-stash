@@ -191,15 +191,17 @@ const InventoryItem = ({ item, onUpdate, onDelete, categories, statuses }) => {
       </div>
 
       <div className="item-body">
-        <div className="item-meta">
-          <span className="category-badge">{item.category}</span>
-        </div>
-        <div className="quantity-section">
+        <div className="meta-qty-row">
+          <div className="item-meta">
+            <span className="category-badge">{item.category}</span>
+          </div>
           <div className="quantity-display">
             <span className="quantity-number">{item.quantity}</span>
             <span className="quantity-unit">{item.unit}</span>
           </div>
-          
+        </div>
+
+        <div className="quantity-section">
           <div className="quantity-slider-container">
             <div className="slider-labels">
               <span>0</span>
