@@ -221,7 +221,7 @@ const InventoryItem = ({ item, onUpdate, onDelete, categories, statuses }) => {
           <div className="notes-section">
             <div className="notes-icon">📝</div>
             <span className="notes-label">Notes</span>
-            <span className="notes-text">{item.notes}</span>
+            <span className="notes-text">{item.notes || 'No notes'}</span>
           </div>
         )}
 
