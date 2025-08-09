@@ -171,7 +171,6 @@ const InventoryItem = ({ item, onUpdate, onDelete, categories, statuses }) => {
         <div className="item-title-section">
           <span className="category-emoji">{getCategoryEmoji(item.category)}</span>
           <h2 className="item-name">{item.name}</h2>
-          <span className="category-badge">{item.category}</span>
         </div>
         <div className="status-dropdown-container">
           <select
@@ -192,12 +191,17 @@ const InventoryItem = ({ item, onUpdate, onDelete, categories, statuses }) => {
       </div>
 
       <div className="item-body">
-        <div className="quantity-section">
+        <div className="meta-qty-row">
+          <div className="item-meta">
+            <span className="category-badge">{item.category}</span>
+          </div>
           <div className="quantity-display">
             <span className="quantity-number">{item.quantity}</span>
             <span className="quantity-unit">{item.unit}</span>
           </div>
-          
+        </div>
+
+        <div className="quantity-section">
           <div className="quantity-slider-container">
             <div className="slider-labels">
               <span>0</span>
@@ -219,7 +223,7 @@ const InventoryItem = ({ item, onUpdate, onDelete, categories, statuses }) => {
           <div className="notes-section">
             <div className="notes-icon">📝</div>
             <span className="notes-label">Notes</span>
-            <span className="notes-text">Add notes</span>
+            <span className="notes-text">{item.notes || 'No notes'}</span>
           </div>
         )}
 

@@ -567,13 +567,15 @@ body {
   justify-content: space-between;
   align-items: flex-start;
   padding: 1.25rem 1.25rem 0;
+  gap: 0.75rem;
+  flex-wrap: wrap;
 }
 
 .item-title-section {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  flex: 1;
+  flex: 1 1 auto;
   min-width: 0;
 }
 
@@ -600,6 +602,14 @@ body {
   font-size: 0.75rem;
   font-weight: 500;
   flex-shrink: 0;
+}
+
+.item-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0 1.25rem;
+  margin-top: 0.5rem;
 }
 
 .status-dropdown-container {
@@ -666,7 +676,24 @@ body {
 
 .item-body {
   padding: 1.25rem;
-  padding-top: 1rem;
+  padding-top: 0.75rem;
+}
+
+.meta-qty-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0 0 0.5rem 0;
+}
+
+.meta-qty-row .item-meta {
+  padding: 0; /* override default padding so row aligns nicely */
+  margin-top: 0;
+}
+
+.meta-qty-row .quantity-display {
+  margin: 0; /* remove bottom margin when inline */
 }
 
 .quantity-section {
