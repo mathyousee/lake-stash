@@ -6,7 +6,13 @@ const InventoryItem = ({ item, onUpdate, onDelete, categories, statuses }) => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const handleSave = () => {
-    onUpdate(item.id, editData);
+    // Parse string values to numbers before saving
+    const dataToSave = {
+      ...editData,
+      quantity: parseFloat(editData.quantity) || 0,
+      maxQuantity: parseFloat(editData.maxQuantity) || 50
+    };
+    onUpdate(item.id, dataToSave);
     setIsEditing(false);
   };
 
@@ -92,7 +98,7 @@ const InventoryItem = ({ item, onUpdate, onDelete, categories, statuses }) => {
                 <input
                   type="number"
                   value={editData.quantity}
-                  onChange={(e) => setEditData({ ...editData, quantity: parseFloat(e.target.value) || 0 })}
+                  onChange={(e) => setEditData({ ...editData, quantity: e.target.value })}
                   min="0"
                   step="0.1"
                 />
@@ -101,8 +107,8 @@ const InventoryItem = ({ item, onUpdate, onDelete, categories, statuses }) => {
                 <label>Max Quantity</label>
                 <input
                   type="number"
-                  value={editData.maxQuantity || 50}
-                  onChange={(e) => setEditData({ ...editData, maxQuantity: parseFloat(e.target.value) || 50 })}
+                  value={editData.maxQuantity}
+                  onChange={(e) => setEditData({ ...editData, maxQuantity: e.target.value })}
                   min="1"
                   step="1"
                 />
